@@ -5,3 +5,7 @@ const invoiceSchema = new mongoose.Schema({
   invoiceNumber: { type: Number, required: true, unique: true },
   invoiceAmount: { type: Number, required: true },
 });
+
+const invoiceModel = mongoose.model("Ivoices", invoiceSchema);
+
+module.exports = invoiceModel;
