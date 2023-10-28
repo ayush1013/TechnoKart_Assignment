@@ -11,36 +11,50 @@ app.post("/api/create", async (req, res) => {
   const { invoiceDate, invoiceNumber, invoiceAmount } = req.body;
 
   try {
-    // Check if the invoiceNumber already exists
-    const existingInvoice = await invoiceModel.findOne({ invoiceNumber });
-
-    if (existingInvoice) {
-      return res.status(400).json({ error: "Invoice number already exists" });
+    function getFinancialYear(date) {
+      const newDate = new Date(date)
+      // console.log("date", date)
+      console.log("newDate", newDate)
+      const year = newDate.getFullYear();
+      const month = newDate.getMonth();
+      // console.log("month", month)
+      // console.log("year", year)
+    
+      if (month >= 3) {
+        return `${year}-${year + 1}`;
+      } else {
+        return `${year - 1}-${year}`;
+      }
     }
+    // console.log(getFinancialYear(invoiceDate))
+    const financialYear = getFinancialYear(invoiceDate);
+    console.log(financialYear)
+    // Check if the invoiceNumber already exists
+
+    const checkInvoiceNumber = `${invoiceNumber}-${financialYear}`
+
+    const existingInvoice = await invoiceModel.find({ invoiceNumber:checkInvoiceNumber });
+    console.log("existingInvoice",existingInvoice);
+
+    // if (existingInvoice.length > 0) {
+    //   return res.status(400).json({ error: "Invoice number already exists" });
+    // }
 
     // Validate invoiceDate against previous and next invoice
-    const prevInvoice = await invoiceModel.findOne({
-      invoiceNumber: invoiceNumber - 1,
-    });
-    const nextInvoice = await invoiceModel.findOne({
-      invoiceNumber: invoiceNumber + 1,
-    });
+    
+    const prevInvoices = await invoiceModel.find({invoiceDate:{$lte:invoiceDate}})
+    const nextInvoces = await invoiceModel.find({invoiceDate:{$gte:invoiceDate}})
 
-    if (prevInvoice && invoiceDate <= prevInvoice.invoiceDate) {
-      return res.status(400).json({ error: "Invalid invoice date" });
-    }
+    console.log("prevInvoices",prevInvoices);
+    console.log("nextInvoces",nextInvoces);
 
-    if (nextInvoice && invoiceDate >= nextInvoice.invoiceDate) {
-      return res.status(400).json({ error: "Invalid invoice date" });
-    }
-
-    const newInvoice = new Invoice({
+    const newInvoice = new invoiceModel({
       invoiceDate,
-      invoiceNumber,
-      invoiceAmount,
+      invoiceNumber: checkInvoiceNumber,
+      invoiceAmount
     });
 
-    await newInvoice.save();
+    // await newInvoice.save();
 
     return res.status(200).json({ message: "Invoice created successfully" });
   } catch (error) {
