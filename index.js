@@ -7,6 +7,36 @@ const invoiceModel = require("./models/invoiceModel.js");
 
 app.use(express.json());
 
+app.get("/api", async (req, res) => {
+  const { invoiceDate, id, invoiceNumber,financialYear } = req.query;
+
+  try {
+    // let invoices;
+    let query = {};
+
+    if(invoiceNumber){
+      query.number = invoiceNumber;
+    }else if(financialYear){
+      query.financialYear = financialYear
+    }else if(invoiceDate){
+      query.invoiceDate = invoiceDate
+    }else if(invoiceDate && financialYear){
+      query.invoiceDate = invoiceDate
+      query.financialYear = financialYear
+    }else{
+      query = {};
+    }
+    
+    let  invoices = await invoiceModel.find(query);
+
+    res.send({ data: invoices });
+  } catch (err) {
+    console.error("Error fetching invoices:", err);
+    res.status(500).send({ message: "Internal server error" });
+  }
+
+});
+
 app.post("/api/create", async (req, res) => {
   const { invoiceDate, invoiceNumber, invoiceAmount } = req.body;
 
@@ -51,23 +81,31 @@ app.post("/api/create", async (req, res) => {
       invoiceDate: { $gte: invoiceDate },
     });
     console.log("prevInvoice", prevInvoice);
-    console.log("nextInvoice", nextInvoice)
+    console.log("nextInvoice", nextInvoice);
 
     // Validate invoiceDate against previous and next invoice
-    function convertToNumber(num){
+    function convertToNumber(num) {
       let number = num.split("-").map(Number)[0];
       return number;
     }
 
     // console.log("number", convertToNumber(nextInvoice[0].invoiceNumber))
 
-
-    if (prevInvoice.length>0 && invoiceNumber < convertToNumber(prevInvoice[prevInvoice.length-1].invoiceNumber)) {
+    if (
+      prevInvoice.length > 0 &&
+      financialYear === prevInvoice[prevInvoice.length - 1].financialYear &&
+      invoiceNumber <
+        convertToNumber(prevInvoice[prevInvoice.length - 1].invoiceNumber)
+    ) {
       console.log("prevInvoice date condition");
       return res.status(400).json({ error: "Invalid invoice date" });
     }
 
-    if (nextInvoice.length>0 && invoiceNumber > convertToNumber(nextInvoice[0].invoiceNumber)) {
+    if (
+      nextInvoice.length > 0 && 
+      financialYear === nextInvoice[0].financialYear &&
+      invoiceNumber > convertToNumber(nextInvoice[0].invoiceNumber)
+    ) {
       console.log("nextInvoice date condition");
       return res.status(400).json({ error: "Invalid invoice date" });
     }
@@ -76,9 +114,11 @@ app.post("/api/create", async (req, res) => {
       invoiceDate,
       invoiceNumber: checkInvoiceNumber,
       invoiceAmount,
+      number: invoiceNumber,
+      financialYear
     });
 
-    // await newInvoice.save();
+    await newInvoice.save();
 
     return res.status(200).json({ message: "Invoice created successfully" });
   } catch (error) {
@@ -87,10 +127,28 @@ app.post("/api/create", async (req, res) => {
   }
 });
 
-app.get("/", async(req, res) => {
-    const find = req.query.find;
-    
-});
+
+app.patch("/api/update/:id", async(req,res)=>{
+  const payload = req.body
+  const id = req.params.id
+
+  try {
+    await invoiceModel.findByIdAndUpdate({_id: id}, payload);
+    res.send("invoice updated successfuly")
+  } catch (err) {
+    res.send("invoice could not be upadated");
+  }
+})
+
+app.delete("/api/delete/:id", async(req,res)=>{
+  const id = req.params.id
+  try {
+    await invoiceModel.findByIdAndDelete({_id: id});
+    res.send("invoice deleted successfuly")
+  } catch (err) {
+    res.send("invoice could not be deleted");
+  }
+})
 
 app.listen(process.env.PORT, async () => {
   try {
