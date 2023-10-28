@@ -36,7 +36,7 @@ const Home = () => {
 
   return (
     <Box>
-      <Grid w={"100%"} gridTemplateColumns="repeat(2,1fr)" gap="50px" p="20px">
+      <Grid w={"100%"} gridTemplateColumns={{base:"repeat(1,1fr)", md:"repeat(1,1fr)", lg:"repeat(2,1fr)"}} gap="50px" p="20px">
         {invoices?.length > 0 &&
           invoices?.map((elem) => (
             <ItemsList key={elem._id} elem={elem} />

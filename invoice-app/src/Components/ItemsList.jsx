@@ -40,7 +40,7 @@ const ItemsList = ({ elem }) => {
       </Flex>
 
       <TableContainer mt="20px">
-        <Table variant="simple">
+        <Table variant="striped" colorScheme="red">
           <Thead>
             <Tr>
               <Th>Item</Th>
