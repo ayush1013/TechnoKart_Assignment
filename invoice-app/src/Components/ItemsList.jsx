@@ -21,10 +21,10 @@ import {
 const ItemsList = ({ elem }) => {
   return (
     <Box  boxShadow={"lg"} p="20px" bgColor={"#F5F5F0"} position={"relative"} >
-      <Flex gap="10px" w="fit-content" position={"absolute"} top="10px" left="10px" >
+      {/* <Flex gap="10px" w="fit-content" position={"absolute"} top="10px" left="10px" >
         <Button variant={"outline"} size={"xs"} colorScheme="green" >Edit</Button>
         <Button variant={"outline"} size={"xs"} colorScheme="red" >Delete</Button>
-      </Flex>
+      </Flex> */}
       <Heading fontSize={"24px"}>INVOICE</Heading>
       <Flex
         mt="20px"

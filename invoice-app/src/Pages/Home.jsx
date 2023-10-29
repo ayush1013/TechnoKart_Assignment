@@ -25,17 +25,18 @@ import { useLocation } from "react-router-dom";
 const Home = () => {
   const invoices = useSelector((store) => store.products);
   const isLoading = useSelector((store) => store.isLoading);
+  const postSuccess = useSelector((store) => store.postSuccess);
   const dispatch = useDispatch();
   const location = useLocation();
 
-//   console.log("location", location);
+  //   console.log("location", location);
 
   // console.log("isLoading", isLoading);
   // console.log("invoices", invoices);
 
   useEffect(() => {
     dispatch(getData(location.search));
-  }, [location.search,dispatch]);
+  }, [location.search, dispatch, postSuccess]);
 
   if (isLoading)
     return <CircularProgress mt="100px" isIndeterminate size="120px" />;
@@ -44,7 +45,7 @@ const Home = () => {
     <Box>
       <Navbar />
       <Grid
-      mt="70px"
+        mt="70px"
         w={"100%"}
         gridTemplateColumns={{
           base: "repeat(1,1fr)",

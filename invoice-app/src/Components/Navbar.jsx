@@ -13,8 +13,10 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { postData } from "../Redux/action";
 
 const initialData = {
   invoiceNumber: "",
@@ -28,8 +30,12 @@ const Navbar = () => {
   const [num, setNum] = useState(initialNum || "");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [data, setData] = useState(initialData);
+  const postLoading = useSelector((store) => store.postLoading);
+  const postError = useSelector((store) => store.postError);
+  const postSuccess = useSelector((store) => store.postSuccess);
+  const dispatch = useDispatch();
 
-//   console.log("initialNum", initialNum);
+  //   console.log("initialNum", initialNum);
 
   const handleChange = (e) => {
     setNum(e.target.value);
@@ -45,13 +51,31 @@ const Navbar = () => {
   };
 
   const handleDataChange = (e) => {
-    setData({...data, [e.target.name] : e.target.value});
+    setData({ ...data, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(data)
+    console.log(data);
+    if (
+      data.invoiceAmount != "" &&
+      data.invoiceDate != "" &&
+      data.invoiceNumber != ""
+    ) {
+      dispatch(postData(data));
+    } else {
+      alert("please fill all the credantial information");
+    }
   };
+
+  useEffect(()=>{
+    if(postSuccess){
+        alert(postSuccess)
+    }
+    if(postError){
+        alert(postError)
+    }
+  },[postError,postSuccess])
 
   return (
     <Flex
@@ -108,6 +132,7 @@ const Navbar = () => {
                 value={data.invoiceNumber}
                 name="invoiceNumber"
                 onChange={handleDataChange}
+                mt="10px"
               />
               <Input
                 placeholder="Invoice Date"
@@ -115,6 +140,7 @@ const Navbar = () => {
                 value={data.invoiceDate}
                 name="invoiceDate"
                 onChange={handleDataChange}
+                mt="10px"
               />
               <Input
                 placeholder="Invoice Amount"
@@ -122,20 +148,14 @@ const Navbar = () => {
                 value={data.invoiceAmount}
                 name="invoiceAmount"
                 onChange={handleDataChange}
+                mt="10px"
               />
-              <Button type submit>
+              <Button type submit colorScheme="blue" mt="10px" isLoading={postLoading} >
                 {" "}
                 Create{" "}
               </Button>
             </form>
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Flex>
