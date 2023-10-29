@@ -8,7 +8,7 @@ const invoiceModel = require("./models/invoiceModel.js");
 app.use(express.json());
 
 app.get("/api", async (req, res) => {
-  const { invoiceDate, id, invoiceNumber,financialYear } = req.query;
+  const { invoiceDate, invoiceNumber,financialYear } = req.query;
 
   try {
     // let invoices;
@@ -39,6 +39,7 @@ app.get("/api", async (req, res) => {
 
 app.post("/api/create", async (req, res) => {
   const { invoiceDate, invoiceNumber, invoiceAmount } = req.body;
+  
 
   try {
     function getFinancialYear(date) {
