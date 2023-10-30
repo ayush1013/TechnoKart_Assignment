@@ -8,6 +8,10 @@ const initialState = {
   postSuccess: false,
   postError: false,
   postLoading: false,
+
+  editSuccess: false,
+  editError: false,
+  editLoading: false,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -26,6 +30,13 @@ export const reducer = (state = initialState, action) => {
       return { ...state, postLoading: false, postSuccess: payload };
     case types.POST_DATA_ERROR:
       return { ...state, postLoading: false, postError: payload };
+
+    case types.EDIT_DATA_REQUEST:
+      return { ...state, editLoading: true };
+    case types.EDIT_DATA_SUCCESS:
+      return { ...state, editLoading: false, editSuccess: payload };
+    case types.EDIT_DATA_ERROR:
+      return { ...state, editLoading: false, editError: payload };
     default:
       return state;
   }

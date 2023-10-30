@@ -2,7 +2,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 
 export const getData = (params) => (dispatch) => {
-  console.log("params in action", params);
+  // console.log("params in action", params);
   let url = `https://tough-fish-hem.cyclic.app/api`;
   if (params) {
     url = `https://tough-fish-hem.cyclic.app/api${params}`;
@@ -38,3 +38,20 @@ export const postData = (body) => (dispatch) => {
       });
     });
 };
+
+export const updateData = (id,body)=> (dispatch) =>{
+  dispatch({type:types.EDIT_DATA_REQUEST})
+  axios
+    .patch(`https://tough-fish-hem.cyclic.app/api/update/${id}`, body)
+    .then((res) => {
+      console.log("update success in action",res.data);
+      dispatch({ type: types.EDIT_DATA_SUCCESS, payload: res.data });
+    })
+    .catch((err) => {
+      console.log("update error in action",err.response.data);
+      dispatch({
+        type: types.EDIT_DATA_ERROR,
+        payload: err.response.data.error,
+      });
+    });
+}
