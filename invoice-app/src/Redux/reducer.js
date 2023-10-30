@@ -12,6 +12,10 @@ const initialState = {
   editSuccess: false,
   editError: false,
   editLoading: false,
+
+  deleteSuccess: false,
+  deleteError: false,
+  deleteLoading: false,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -37,6 +41,14 @@ export const reducer = (state = initialState, action) => {
       return { ...state, editLoading: false, editSuccess: payload };
     case types.EDIT_DATA_ERROR:
       return { ...state, editLoading: false, editError: payload };
+
+    case types.DELETE_DATA_REQUEST:
+      return { ...state, deleteLoading: true };
+    case types.DELETE_DATA_SUCCESS:
+      return { ...state, deleteLoading: false, deleteSuccess: payload };
+    case types.DELETE_DATA_ERROR:
+      return { ...state, deleteLoading: false, deleteError: payload };
+      
     default:
       return state;
   }

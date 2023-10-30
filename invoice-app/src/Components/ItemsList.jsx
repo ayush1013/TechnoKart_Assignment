@@ -27,7 +27,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateData } from "../Redux/action";
+import { deleteData, updateData } from "../Redux/action";
 
 const ItemsList = ({ elem }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,8 +38,7 @@ const ItemsList = ({ elem }) => {
     invoiceAmount: elem.invoiceAmount,
   });
   const editLoading = useSelector((store) => store.editLoading);
-  const editError = useSelector((store) => store.editError);
-  const editSuccess = useSelector((store) => store.editSuccess);
+  const deleteLoading = useSelector((store) => store.deleteLoading);
 
   const handleDataChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
@@ -51,16 +50,11 @@ const ItemsList = ({ elem }) => {
     dispatch(updateData(id, editData));
   };
 
-  const handleDelete = (id) => {};
+  const handleDelete = (id) => {
+    dispatch(deleteData(id));
+  };
 
-  useEffect(()=>{
-    if(editSuccess){
-        alert(editSuccess)
-    }
-    if(editError){
-        alert(editError)
-    }
-  },[editError,editSuccess])
+  
 
   return (
     <Box boxShadow={"lg"} p="20px" bgColor={"#F5F5F0"} position={"relative"}>
@@ -84,6 +78,7 @@ const ItemsList = ({ elem }) => {
           size={"xs"}
           colorScheme="red"
           onClick={() => handleDelete(elem._id)}
+          isLoading={deleteLoading}
         >
           Delete
         </Button>

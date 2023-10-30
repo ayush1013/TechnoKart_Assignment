@@ -26,6 +26,8 @@ const Home = () => {
   const invoices = useSelector((store) => store.products);
   const isLoading = useSelector((store) => store.isLoading);
   const postSuccess = useSelector((store) => store.postSuccess);
+  const editSuccess = useSelector((store) => store.editSuccess);
+  const deleteSuccess = useSelector((store) => store.deleteSuccess);
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -36,7 +38,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getData(location.search));
-  }, [location.search, dispatch, postSuccess]);
+  }, [location.search, dispatch, postSuccess, editSuccess, deleteSuccess]);
 
   if (isLoading)
     return <CircularProgress mt="100px" isIndeterminate size="120px" />;
