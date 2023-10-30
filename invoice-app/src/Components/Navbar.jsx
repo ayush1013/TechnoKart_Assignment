@@ -54,6 +54,8 @@ const Navbar = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(data);
@@ -110,13 +112,15 @@ const Navbar = () => {
         />
       </Flex>
 
-      <Select w="30%" onChange={handleFinancialYear}>
+      <Select w="20%" onChange={handleFinancialYear}>
         <option value="">All</option>
         <option value="2020-2021"> 2020-2021</option>
         <option value="2021-2022">2021-2022</option>
         <option value="2022-2023">2022-2023</option>
         <option value="2023-2024">2023-2024</option>
       </Select>
+
+
       <Button onClick={onOpen}>Create Invoice</Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>

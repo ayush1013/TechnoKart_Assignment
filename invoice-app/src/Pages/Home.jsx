@@ -31,7 +31,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  //   console.log("location", location);
+    // console.log("location", location);
 
   // console.log("isLoading", isLoading);
   // console.log("invoices", invoices);
